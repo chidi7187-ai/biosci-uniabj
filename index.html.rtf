@@ -1,0 +1,283 @@
+{\rtf1\fbidis\ansi\ansicpg1252\deff0\nouicompat\deflang2057{\fonttbl{\f0\fnil Segoe UI;}}
+{\colortbl ;\red0\green0\blue0;}
+{\*\generator Riched20 10.0.26100}\viewkind4\uc1 
+\pard\tx720\cf1\f0\fs38\lang8192 import React, \{ useState, useEffect \} from "react";\par
+import \{ motion \} from "framer-motion";\par
+import \{ Menu, X, Github, Mail, Calendar, Trophy \} from "lucide-react";\par
+\par
+export default function DeptBioSite() \{\par
+  const [menuOpen, setMenuOpen] = useState(false);\par
+  const [active, setActive] = useState("home");\par
+\par
+  const sampleQuiz = [\par
+    \{ q: "Who discovered the cell?", a: "Robert Hooke", options: ["Robert Hooke", "Charles Darwin", "Gregor Mendel", "Louis Pasteur"] \},\par
+    \{ q: "What is the powerhouse of the cell?", a: "Mitochondria", options: ["Nucleus", "Mitochondria", "Ribosome", "Golgi"] \},\par
+    \{ q: "DNA stands for", a: "Deoxyribonucleic Acid", options: ["Deoxyribonucleic Acid", "Ribonucleic Acid", "Deoxy Acid", "Dioxynucleic Acid"] \}\par
+  ];\par
+\par
+  const [quizIndex, setQuizIndex] = useState(0);\par
+  const [score, setScore] = useState(0);\par
+  const [name, setName] = useState("");\par
+  const [leaderboard, setLeaderboard] = useState(() => \{\par
+    try \{\par
+      return JSON.parse(localStorage.getItem("biosci_leaderboard")) || [];\par
+    \} catch \{\par
+      return [];\par
+    \}\par
+  \});\par
+\par
+  useEffect(() => \{\par
+    localStorage.setItem("biosci_leaderboard", JSON.stringify(leaderboard));\par
+  \}, [leaderboard]);\par
+\par
+  function answer(option) \{\par
+    const correct = sampleQuiz[quizIndex].a === option;\par
+    if (correct) setScore(s => s + 1);\par
+    const next = quizIndex + 1;\par
+    if (next < sampleQuiz.length) setQuizIndex(next);\par
+    else \{\par
+      if (name.trim()) \{\par
+        const entry = \{ name: name.trim(), score \};\par
+        setLeaderboard(lb => \{\par
+          const updated = [...lb, entry].sort((a, b) => b.score - a.score).slice(0, 10);\par
+          return updated;\par
+        \});\par
+      \}\par
+      setTimeout(() => \{\par
+        setQuizIndex(0);\par
+        setScore(0);\par
+        setName("");\par
+      \}, 1000);\par
+    \}\par
+  \}\par
+\par
+  const [updates] = useState([\par
+    \{ id: 1, title: "Departmental Week Preparation", date: "2025-10-27", body: "Students are encouraged to participate in planning and creative ideas for the upcoming Departmental Week." \},\par
+    \{ id: 2, title: "Molecular Genetics Seminar", date: "2025-11-05", body: "Join us at Lecture Hall B, 11:00 AM for an engaging seminar on modern molecular biology research." \}\par
+  ]);\par
+\par
+  const [vibes] = useState([\par
+    \{ id: 1, text: "When the lab practical actually works \u-10179?\u-8702?" \},\par
+    \{ id: 2, text: "Group meeting at the library? Who's coming? \u-10179?\u-8998?" \}\par
+  ]);\par
+\par
+  useEffect(() => \{\par
+    const el = document.getElementById(active);\par
+    if (el) el.scrollIntoView(\{ behavior: "smooth", block: "start" \});\par
+  \}, [active]);\par
+\par
+  return (\par
+    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">\par
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur border-b">\par
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">\par
+          <div className="flex items-center gap-3">\par
+            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-600 to-black flex items-center justify-center text-white font-bold shadow-lg">\par
+              <span className="text-sm">Bio</span>\par
+            </div>\par
+            <div>\par
+              <div className="font-extrabold text-lg">Department of Biological Sciences</div>\par
+              <div className="text-xs text-gray-600">University of Abuja \emdash  Connecting Biologists \bullet  Sharing Knowledge</div>\par
+            </div>\par
+          </div>\par
+\par
+          <nav className="hidden md:flex items-center gap-4">\par
+            \{['home','updates','vibes','games','activities','about'].map(i => (\par
+              <button key=\{i\} onClick=\{() => setActive(i)\} className=\{`px-3 py-2 rounded-md text-sm font-medium $\{active===i? 'bg-blue-600 text-white' : 'text-gray-700 hover:bg-gray-100'\}`\}>\par
+                \{i.charAt(0).toUpperCase()+i.slice(1)\}\par
+              </button>\par
+            ))\}\par
+            <a className="ml-4 inline-flex items-center gap-2 px-3 py-2 rounded-md border border-gray-200" href="mailto:biosci.uniabuja@gmail.com"><Mail size=\{16\}/>Contact</a>\par
+          </nav>\par
+\par
+          <div className="md:hidden">\par
+            <button onClick=\{() => setMenuOpen(o => !o)\} className="p-2">\par
+              \{menuOpen ? <X size=\{20\} /> : <Menu size=\{20\} />\}\par
+            </button>\par
+          </div>\par
+        </div>\par
+\par
+        \{menuOpen && (\par
+          <div className="md:hidden border-t">\par
+            <div className="flex flex-col px-4 py-3 gap-2">\par
+              \{['home','updates','vibes','games','activities','about'].map(i => (\par
+                <button key=\{i\} onClick=\{() => \{ setActive(i); setMenuOpen(false); \}\} className=\{`text-left px-2 py-2 rounded $\{active===i? 'bg-blue-600 text-white' : 'hover:bg-gray-100'\}`\}>\par
+                  \{i.charAt(0).toUpperCase()+i.slice(1)\}\par
+                </button>\par
+              ))\}\par
+              <a className="px-2 py-2" href="mailto:biosci.uniabuja@gmail.com">Contact</a>\par
+            </div>\par
+          </div>\par
+        )\}\par
+      </header>\par
+\par
+      <main className="max-w-6xl mx-auto px-4 py-10 space-y-16">\par
+        <section id="home" className="grid md:grid-cols-2 gap-6 items-center">\par
+          <div>\par
+            <motion.h1 initial=\{\{ y: -10, opacity: 0 \}\} animate=\{\{ y: 0, opacity: 1 \}\} className="text-4xl font-extrabold">Department of Biological Sciences<span className="text-blue-600"> \bullet  UniAbuja</span></motion.h1>\par
+            <p className="mt-4 text-gray-700 leading-relaxed">A digital hub designed for students of the Department of Biological Sciences. Stay updated with departmental news, connect with fellow students, join games & quizzes, and explore upcoming events.</p>\par
+\par
+            <div className="mt-6 flex flex-wrap gap-3">\par
+              <button onClick=\{() => setActive('updates')\} className="px-4 py-2 rounded-md bg-blue-600 text-white font-medium shadow">View Updates</button>\par
+              <button onClick=\{() => setActive('games')\} className="px-4 py-2 rounded-md border border-gray-200">Play Quiz</button>\par
+              <a href="#" className="px-4 py-2 rounded-md text-sm text-gray-600">Join WhatsApp Channel</a>\par
+            </div>\par
+\par
+            <div className="mt-6 grid grid-cols-2 gap-3 text-sm">\par
+              <div className="p-3 rounded bg-white shadow">Students \bullet  Events \bullet  Projects</div>\par
+              <div className="p-3 rounded bg-white shadow">Missions \bullet  Outreach \bullet  Labs</div>\par
+            </div>\par
+          </div>\par
+\par
+          <div className="rounded-xl overflow-hidden shadow-lg bg-gradient-to-br from-blue-50 to-white p-6">\par
+            <div className="text-sm text-gray-500 mb-3">Announcement</div>\par
+            <div className="text-lg font-semibold">Welcome to the Department Hub!</div>\par
+            <div className="mt-4 text-gray-600">Stay tuned for exciting departmental activities, upcoming events, and new opportunities to get involved.</div>\par
+\par
+            <div className="mt-6 grid grid-cols-2 gap-2">\par
+              <div className="p-3 rounded border text-center">\u-10179?\u-9018? Events</div>\par
+              <div className="p-3 rounded border text-center">\u-10178?\u-8726? Labs</div>\par
+              <div className="p-3 rounded border text-center">\u-10180?\u-8250? Achievements</div>\par
+              <div className="p-3 rounded border text-center">\u-10179?\u-9044? Vibes</div>\par
+            </div>\par
+          </div>\par
+        </section>\par
+\par
+        <section id="updates" className="space-y-6">\par
+          <h2 className="text-2xl font-bold">Latest Updates</h2>\par
+          <div className="grid md:grid-cols-2 gap-4">\par
+            \{updates.map(u => (\par
+              <article key=\{u.id\} className="p-4 rounded-lg bg-white shadow">\par
+                <div className="flex items-start justify-between">\par
+                  <div>\par
+                    <h3 className="font-semibold">\{u.title\}</h3>\par
+                    <div className="text-xs text-gray-500">\{u.date\}</div>\par
+                  </div>\par
+                </div>\par
+                <p className="mt-3 text-gray-700">\{u.body\}</p>\par
+              </article>\par
+            ))\}\par
+          </div>\par
+        </section>\par
+\par
+        <section id="vibes" className="space-y-6">\par
+          <h2 className="text-2xl font-bold">Student Vibes</h2>\par
+          <div className="grid md:grid-cols-3 gap-4">\par
+            \{vibes.map(v => (\par
+              <div key=\{v.id\} className="p-4 rounded-lg bg-white shadow">\par
+                <p className="text-gray-800">\{v.text\}</p>\par
+                <div className="mt-3 text-xs text-gray-500">React with an emoji below!</div>\par
+                <div className="mt-2 flex gap-2 text-xl"> <button>\u-10179?\u-8702?</button> <button>\u-10179?\u-8923?</button> <button>\u-10179?\u-9137?</button> </div>\par
+              </div>\par
+            ))\}\par
+          </div>\par
+\par
+          <div className="mt-6 p-4 rounded-lg bg-gradient-to-r from-blue-50 to-white border">\par
+            <h3 className="font-semibold">Student of the Week</h3>\par
+            <p className="text-sm text-gray-700 mt-2">Shoutout to <strong>Amaka J.</strong> for outstanding performance in Biochemistry practicals.</p>\par
+          </div>\par
+        </section>\par
+\par
+        <section id="games" className="space-y-6">\par
+          <h2 className="text-2xl font-bold">Games & Quizzes</h2>\par
+\par
+          <div className="grid md:grid-cols-2 gap-6">\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <h3 className="font-semibold">Weekly Quiz</h3>\par
+              <p className="mt-2 text-sm text-gray-600">Test your knowledge \emdash  top scorers get featured.</p>\par
+\par
+              <div className="mt-4">\par
+                <div className="text-sm text-gray-500">Question \{quizIndex+1\} of \{sampleQuiz.length\}</div>\par
+                <div className="mt-2 font-medium">\{sampleQuiz[quizIndex].q\}</div>\par
+                <div className="mt-3 grid gap-2">\par
+                  \{sampleQuiz[quizIndex].options.map(opt => (\par
+                    <button key=\{opt\} onClick=\{() => answer(opt)\} className="text-left px-3 py-2 rounded border hover:bg-gray-50">\{opt\}</button>\par
+                  ))\}\par
+                </div>\par
+\par
+                <div className="mt-4">\par
+                  <input placeholder="Your Name (for leaderboard)" value=\{name\} onChange=\{e=>setName(e.target.value)\} className="w-full p-2 border rounded" />\par
+                  <div className="mt-2 text-sm text-gray-600">Score: \{score\}</div>\par
+                </div>\par
+              </div>\par
+            </div>\par
+\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <h3 className="font-semibold">Leaderboard</h3>\par
+              <ol className="mt-3 space-y-2">\par
+                \{leaderboard.length===0 && <div className="text-sm text-gray-500">No scores yet \emdash  be the first!</div>\}\par
+                \{leaderboard.map((l, idx) => (\par
+                  <li key=\{idx\} className="flex items-center justify-between bg-gray-50 p-2 rounded">\par
+                    <div className="font-medium">\{l.name\}</div>\par
+                    <div className="text-sm text-gray-600">\{l.score\}</div>\par
+                  </li>\par
+                ))\}\par
+              </ol>\par
+              <div className="mt-4 text-xs text-gray-500">Note: leaderboard is stored locally in your browser.</div>\par
+            </div>\par
+          </div>\par
+        </section>\par
+\par
+        <section id="activities" className="space-y-6">\par
+          <h2 className="text-2xl font-bold">Activities & Events</h2>\par
+          <div className="grid md:grid-cols-3 gap-4">\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <div className="flex items-center gap-3">\par
+                <Calendar size=\{20\} />\par
+                <div>\par
+                \par
+        \par
+                </div>\par
+              </div>\par
+              <p className="mt-3 text-sm text-gray-700">Workshops \bullet  Talks \bullet  Exhibitions \bullet  Socials</p>\par
+            </div>\par
+\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <div className="flex items-center gap-3">\par
+                <Trophy size=\{20\} />\par
+                <div>\par
+                  <div className="font-semibold">Biology Exhibition</div>\par
+                  <div className="text-sm text-gray-600">Date: TBA</div>\par
+                </div>\par
+              </div>\par
+              <p className="mt-3 text-sm text-gray-700">Showcase students' research & projects.</p>\par
+            </div>\par
+\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <div className="font-semibold">Volunteer Signup</div>\par
+              <p className="text-sm text-gray-700 mt-2">Want to join the media or event team? Sign up and we'll reach out.</p>\par
+              <a className="mt-3 inline-block text-sm" href="#">Volunteer Form</a>\par
+            </div>\par
+          </div>\par
+\par
+          <div className="mt-6">\par
+            <h3 className="font-semibold">Calendar</h3>\par
+            <div className="mt-3 border rounded overflow-hidden">\par
+              <iframe title="dept-calendar" src="https://calendar.google.com/calendar/embed?height=300&amp;wkst=1&amp;bgcolor=%23ffffff&amp;ctz=Africa%2FNairobi" className="w-full h-72" />\par
+            </div>\par
+          </div>\par
+        </section>\par
+\par
+        <section id="about" className="space-y-6">\par
+          <h2 className="text-2xl font-bold">About & Contact</h2>\par
+          <div className="grid md:grid-cols-2 gap-6">\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <h3 className="font-semibold">About the Department</h3>\par
+              <p className="mt-2 text-sm text-gray-700">The Department of Biological Sciences, University of Abuja is dedicated to excellence in biological education and research. This hub keeps students informed, inspired, and united.</p>\par
+\par
+              <div className="mt-4">\par
+                <div className="text-sm text-gray-500">HOD: Dr. [Name]</div>\par
+                <div className="text-sm text-gray-500">Dept President: [Name]</div>\par
+                <div className="mt-3">\par
+                  <a className="inline-flex items-center gap-2 px-3 py-2 rounded bg-blue-600 text-white" href="mailto:biosci.uniabuja@gmail.com"><Mail size=\{14\}/> Email Media Team</a>\par
+                </div>\par
+              </div>\par
+            </div>\par
+\par
+            <div className="p-4 rounded-lg bg-white shadow">\par
+              <h3 className="font-semibold">Get in touch</h3>\par
+              <p className="text-sm text-gray-700 mt-2">Want us to post your event, share news, or join the media team? Send a message or fill the quick form.</p>\par
+              <form className="mt-4 space-y-3" onSubmit=\{(e)=>\{e.preventDefault(); alert('Form submitted \emdash  we will contact you.');\}\}>\par
+                <input className="w-full p-2 border rounded" placeholder="Your name" required />\par
+                <input className="w-full p-2 border rounded" placeholder="Your email or Whats\par
+}
+ 
